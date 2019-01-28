@@ -1,0 +1,366 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Informática (1º del Grado en Matemáticas, Grupo 3)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 7º examen de evaluación continua (27 de mayo de 2011)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{k+kr}{import} \PYG{n+nn}{Data.List}
+\PYG{k+kr}{import} \PYG{n+nn}{Data.Array}
+\PYG{k+kr}{import} \PYG{n+nn}{Test.QuickCheck}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} import GrafoConMatrizDeAdyacencia }
+\PYG{k+kr}{import} \PYG{n+nn}{GrafoConVectorDeAdyacencia}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 1. En los distintos apartados de este ejercicio}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} consideraremos relaciones binarias, representadas mediante una lista}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} de pares. Para ello, definimos el tipo de las relaciones binarias}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} sobre el tipo a. }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    type RB a = [(a,a)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Usaremos los siguientes ejemplos de relaciones}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    r1, r2, r3 :: RB Int}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    r1 = [(1,3),(3,1), (1,1), (3,3)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    r2 = [(1,3),(3,1)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    r3 = [(1,2),(1,4),(3,3),(2,1),(4,2)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}  Definir la función }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    universo :: Eq a =\PYGZgt{} RB a \PYGZhy{}\PYGZgt{} [a] }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (universo r) es la lista de elementos de la relación r. Por}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     universo r1 == [1,3]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}     universo r3 == [1,2,3,4]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{k+kr}{type} \PYG{k+kt}{RB} \PYG{n}{a} \PYG{o+ow}{=} \PYG{p}{[(}\PYG{n}{a}\PYG{p}{,}\PYG{n}{a}\PYG{p}{)]}
+
+\PYG{n+nf}{r1}\PYG{p}{,} \PYG{n}{r2}\PYG{p}{,} \PYG{n}{r3} \PYG{o+ow}{::} \PYG{k+kt}{RB} \PYG{k+kt}{Int}
+\PYG{n+nf}{r1} \PYG{o+ow}{=} \PYG{p}{[(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{),(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),} \PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{)]}
+\PYG{n+nf}{r2} \PYG{o+ow}{=} \PYG{p}{[(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{),(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)]}
+\PYG{n+nf}{r3} \PYG{o+ow}{=} \PYG{p}{[(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{),(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{4}\PYG{p}{),(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{),(}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),(}\PYG{l+m+mi}{4}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)]}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1ª definición:}
+\PYG{n+nf}{universo} \PYG{o+ow}{::} \PYG{k+kt}{Eq} \PYG{n}{a} \PYG{o+ow}{=\PYGZgt{}} \PYG{k+kt}{RB} \PYG{n}{a} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{p}{[}\PYG{n}{a}\PYG{p}{]}
+\PYG{n+nf}{universo} \PYG{n}{r} \PYG{o+ow}{=} \PYG{n}{nub} \PYG{p}{(}\PYG{n}{l1} \PYG{o}{++} \PYG{n}{l2}\PYG{p}{)} 
+    \PYG{k+kr}{where} \PYG{n}{l1} \PYG{o+ow}{=} \PYG{n}{map} \PYG{n}{fst} \PYG{n}{r}
+          \PYG{n}{l2} \PYG{o+ow}{=} \PYG{n}{map} \PYG{n}{snd} \PYG{n}{r}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 2ª definición:}
+\PYG{n+nf}{universo2} \PYG{o+ow}{::} \PYG{k+kt}{Eq} \PYG{n}{a} \PYG{o+ow}{=\PYGZgt{}} \PYG{k+kt}{RB} \PYG{n}{a} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{p}{[}\PYG{n}{a}\PYG{p}{]}
+\PYG{n+nf}{universo2} \PYG{n}{r} \PYG{o+ow}{=} \PYG{n}{nub} \PYG{p}{(}\PYG{n}{concat} \PYG{p}{[[}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{]} \PYG{o}{|} \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{r}\PYG{p}{])}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 1.2. Definir la función }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    reflexiva:: RB Int \PYGZhy{}\PYGZgt{} Bool}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (reflexiva r) se verifica si r es una relación reflexiva en}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} su universo. Por ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    reflexiva r1 == True}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    reflexiva r2 == False}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n+nf}{reflexiva}\PYG{o+ow}{::} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool}
+\PYG{n+nf}{reflexiva} \PYG{n}{r} \PYG{o+ow}{=} \PYG{n}{and} \PYG{p}{[(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{x}\PYG{p}{)} \PYG{p}{`}\PYG{n}{elem}\PYG{p}{`} \PYG{n}{r} \PYG{o}{|} \PYG{n}{x} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{universo} \PYG{n}{r}\PYG{p}{]}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 1.3. Dadas dos relaciones binarias R y S, la composición es}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} la relación R o S = \PYGZob{}(a,c) | existe b tal que aRb y bRc\PYGZcb{}.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Definir la función }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    compRB:: RB Int \PYGZhy{}\PYGZgt{} RB Int \PYGZhy{}\PYGZgt{} RB Int}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (compRB r1 r2) es la composición de las relaciones r1 y r2.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Por ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   compRB r1 r3 == [(1,3),(3,2),(3,4),(1,2),(1,4),(3,3)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   compRB r3 r1 == [(3,1),(3,3),(2,3),(2,1)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1ª definición:}
+\PYG{n+nf}{compRB}\PYG{o+ow}{::} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{RB} \PYG{k+kt}{Int}
+\PYG{n+nf}{compRB} \PYG{n}{r} \PYG{n}{s} \PYG{o+ow}{=} \PYG{p}{[(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{z}\PYG{p}{)} \PYG{o}{|} \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{r}\PYG{p}{,} \PYG{p}{(}\PYG{n}{y\PYGZsq{}}\PYG{p}{,}\PYG{n}{z}\PYG{p}{)} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{s}\PYG{p}{,} \PYG{n}{y} \PYG{o}{==} \PYG{n}{y\PYGZsq{}}\PYG{p}{]}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 2ª definición:}
+\PYG{n+nf}{compRB2}\PYG{o+ow}{::} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{RB} \PYG{k+kt}{Int}
+\PYG{n+nf}{compRB2} \PYG{k+kt}{[]} \PYG{k+kr}{\PYGZus{}}        \PYG{o+ow}{=} \PYG{k+kt}{[]}
+\PYG{n+nf}{compRB2} \PYG{p}{((}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)}\PYG{k+kt}{:}\PYG{n}{r}\PYG{p}{)} \PYG{n}{s} \PYG{o+ow}{=} \PYG{n}{compPar} \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)} \PYG{n}{s} \PYG{o}{++} \PYG{n}{compRB2} \PYG{n}{r} \PYG{n}{s}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} (compPar p r) es la relación obtenida componiendo el par p con la}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} relación binaria r. Por ejemplo,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    compPar (5,1) r1  ==  [(5,3),(5,1)]}
+\PYG{n+nf}{compPar}\PYG{o+ow}{::} \PYG{p}{(}\PYG{k+kt}{Int}\PYG{p}{,}\PYG{k+kt}{Int}\PYG{p}{)} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{RB} \PYG{k+kt}{Int}
+\PYG{n+nf}{compPar} \PYG{k+kr}{\PYGZus{}} \PYG{k+kt}{[]}            \PYG{o+ow}{=} \PYG{k+kt}{[]}
+\PYG{n+nf}{compPar} \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)} \PYG{p}{((}\PYG{n}{z}\PYG{p}{,}\PYG{n}{t}\PYG{p}{)}\PYG{k+kt}{:}\PYG{n}{r}\PYG{p}{)} \PYG{o}{|} \PYG{n}{y} \PYG{o}{==} \PYG{n}{z}    \PYG{o+ow}{=} \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{t}\PYG{p}{)} \PYG{k+kt}{:} \PYG{n}{compPar} \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)} \PYG{n}{r}
+                        \PYG{o}{|} \PYG{n}{otherwise} \PYG{o+ow}{=} \PYG{n}{compPar} \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)} \PYG{n}{r}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 3ª definición:}
+\PYG{n+nf}{compRB3}\PYG{o+ow}{::} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{RB} \PYG{k+kt}{Int}
+\PYG{n+nf}{compRB3} \PYG{n}{r1} \PYG{n}{r2} \PYG{o+ow}{=} \PYG{p}{[(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{z}\PYG{p}{)} \PYG{o}{|} \PYG{n}{x} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{universo} \PYG{n}{r1}\PYG{p}{,} \PYG{n}{z} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{universo} \PYG{n}{r2}\PYG{p}{,}
+                         \PYG{n}{interRelacionados} \PYG{n}{x} \PYG{n}{z} \PYG{n}{r1} \PYG{n}{r2}\PYG{p}{]}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} (interRelacionados x z r s) se verifica si existe un y tal que (x,y)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} está en r e (y,z) está en s. Por ejemplo.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    interRelacionados 3 4 r1 r3  ==  True}
+\PYG{n+nf}{interRelacionados} \PYG{o+ow}{::} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool}
+\PYG{n+nf}{interRelacionados} \PYG{n}{x} \PYG{n}{z} \PYG{n}{r} \PYG{n}{s} \PYG{o+ow}{=}
+    \PYG{n}{not} \PYG{p}{(}\PYG{n}{null} \PYG{p}{[}\PYG{n}{y} \PYG{o}{|} \PYG{n}{y}\PYG{o+ow}{\PYGZlt{}\PYGZhy{}}\PYG{n}{universo} \PYG{n}{r}\PYG{p}{,} \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)} \PYG{n}{p} \PYG{p}{`}\PYG{n}{elem}\PYG{p}{`} \PYG{n}{r}\PYG{p}{,} \PYG{p}{(}\PYG{n}{y}\PYG{p}{,}\PYG{n}{z}\PYG{p}{)} \PYG{p}{`}\PYG{n}{elem}\PYG{p}{`} \PYG{n}{s}\PYG{p}{])}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 1.4. Definir la función }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    transitiva:: RB Int \PYGZhy{}\PYGZgt{} Bool}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (transitiva r) se verifica si r es una relación}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} transitiva. Por ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    transitiva r1 == True}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    transitiva r2 == False}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1ª solución:}
+\PYG{n+nf}{transitiva} \PYG{o+ow}{::} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool}
+\PYG{n+nf}{transitiva} \PYG{n}{r} \PYG{o+ow}{=} \PYG{n}{and} \PYG{p}{[(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{z}\PYG{p}{)} \PYG{p}{`}\PYG{n}{elem}\PYG{p}{`} \PYG{n}{r} \PYG{o}{|} \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{r}\PYG{p}{,} \PYG{p}{(}\PYG{n}{y\PYGZsq{}}\PYG{p}{,}\PYG{n}{z}\PYG{p}{)} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{r}\PYG{p}{,} \PYG{n}{y} \PYG{o}{==} \PYG{n}{y\PYGZsq{}}\PYG{p}{]} 
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 2ª solución:}
+\PYG{n+nf}{transitiva2} \PYG{o+ow}{::} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool}
+\PYG{n+nf}{transitiva2} \PYG{k+kt}{[]} \PYG{o+ow}{=} \PYG{k+kt}{True}
+\PYG{n+nf}{transitiva2} \PYG{n}{r}  \PYG{o+ow}{=} \PYG{n}{and} \PYG{p}{[}\PYG{n}{trans} \PYG{n}{par} \PYG{n}{r} \PYG{o}{|} \PYG{n}{par} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{r}\PYG{p}{]} 
+    \PYG{k+kr}{where} \PYG{n}{trans} \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)} \PYG{n}{r} \PYG{o+ow}{=} \PYG{n}{and} \PYG{p}{[(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{v}\PYG{p}{)} \PYG{p}{`}\PYG{n}{elem}\PYG{p}{`} \PYG{n}{r} \PYG{o}{|} \PYG{p}{(}\PYG{n}{u}\PYG{p}{,}\PYG{n}{v}\PYG{p}{)} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{r}\PYG{p}{,} \PYG{n}{u} \PYG{o}{==} \PYG{n}{y} \PYG{p}{]}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 3ª solución (usando la composición de relaciones):}
+\PYG{n+nf}{transitiva3} \PYG{o+ow}{::} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool}
+\PYG{n+nf}{transitiva3} \PYG{n}{r} \PYG{o+ow}{=} \PYG{n}{contenida} \PYG{n}{r} \PYG{p}{(}\PYG{n}{compRB} \PYG{n}{r} \PYG{n}{r}\PYG{p}{)}
+    \PYG{k+kr}{where} \PYG{n}{contenida} \PYG{k+kt}{[]} \PYG{k+kr}{\PYGZus{}}      \PYG{o+ow}{=} \PYG{k+kt}{True}
+          \PYG{n}{contenida} \PYG{p}{(}\PYG{n}{x}\PYG{k+kt}{:}\PYG{n}{xs}\PYG{p}{)} \PYG{n}{ys} \PYG{o+ow}{=} \PYG{n}{elem} \PYG{n}{x} \PYG{n}{ys} \PYG{o}{\PYGZam{}\PYGZam{}} \PYG{n}{contenida}  \PYG{n}{xs} \PYG{n}{ys}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 4ª solución:}
+\PYG{n+nf}{transitiva4} \PYG{o+ow}{::} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool}
+\PYG{n+nf}{transitiva4} \PYG{o+ow}{=} \PYG{n}{not} \PYG{o}{.} \PYG{n}{noTransitiva}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} (noTransitiva r) se verifica si r no es transitiva; es decir, si}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} existe un (x,y), (y,z) en r tales que (x,z) no está en r. }
+\PYG{n+nf}{noTransitiva} \PYG{o+ow}{::} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool}
+\PYG{n+nf}{noTransitiva} \PYG{n}{r} \PYG{o+ow}{=} 
+    \PYG{n}{not} \PYG{p}{(}\PYG{n}{null} \PYG{p}{[(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{,}\PYG{n}{z}\PYG{p}{)} \PYG{o}{|} \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{,}\PYG{n}{z}\PYG{p}{)} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{ls}\PYG{p}{,} 
+                         \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{)} \PYG{p}{`}\PYG{n}{elem}\PYG{p}{`} \PYG{n}{r} \PYG{p}{,} \PYG{p}{(}\PYG{n}{y}\PYG{p}{,}\PYG{n}{z}\PYG{p}{)} \PYG{p}{`}\PYG{n}{elem}\PYG{p}{`} \PYG{n}{r}\PYG{p}{,} 
+                         \PYG{p}{(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{z}\PYG{p}{)} \PYG{p}{`}\PYG{n}{notElem}\PYG{p}{`} \PYG{n}{r}\PYG{p}{])}
+    \PYG{k+kr}{where} \PYG{n}{l} \PYG{o+ow}{=} \PYG{n}{universo} \PYG{n}{r}
+          \PYG{n}{ls} \PYG{o+ow}{=} \PYG{p}{[(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{y}\PYG{p}{,}\PYG{n}{z}\PYG{p}{)} \PYG{o}{|} \PYG{n}{x} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{l}\PYG{p}{,} \PYG{n}{y} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{l}\PYG{p}{,} \PYG{n}{z} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{l}\PYG{p}{,} \PYG{n}{x}\PYG{o}{/=}\PYG{n}{y}\PYG{p}{,} \PYG{n}{y} \PYG{o}{/=} \PYG{n}{z}\PYG{p}{]}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 2.1. Consideremos un grafo G = (V,E), donde V es un}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} conjunto finito de nodos ordenados y E es un conjunto de arcos. En un}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} grafo, la anchura de un nodo es el máximo de los valores absolutos de}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} la diferencia entre el valor del nodo y los de sus adyacentes; y la}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} anchura del grafo es la máxima anchura de sus nodos. Por ejemplo, en}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} el grafo  }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    g :: Grafo Int Int}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    g = creaGrafo ND (1,5) [(1,2,1),(1,3,1),(1,5,1),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                            (2,4,1),(2,5,1),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                            (3,4,1),(3,5,1),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                            (4,5,1)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} su anchura es 4 y el nodo de máxima anchura es el 5.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Definir la función }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    anchura :: Grafo Int Int \PYGZhy{}\PYGZgt{} Int}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (anchuraG g) es la anchura del grafo g. Por ejemplo,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    anchura g  ==  4}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n+nf}{g} \PYG{o+ow}{::} \PYG{k+kt}{Grafo} \PYG{k+kt}{Int} \PYG{k+kt}{Int}
+\PYG{n+nf}{g} \PYG{o+ow}{=} \PYG{n}{creaGrafo} \PYG{k+kt}{ND} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{5}\PYG{p}{)} \PYG{p}{[(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{5}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),}
+                        \PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{4}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),(}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{5}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),}
+                        \PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{4}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{5}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),}
+                        \PYG{p}{(}\PYG{l+m+mi}{4}\PYG{p}{,}\PYG{l+m+mi}{5}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{)]}
+
+\PYG{n+nf}{anchura} \PYG{o+ow}{::} \PYG{k+kt}{Grafo} \PYG{k+kt}{Int} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int}
+\PYG{n+nf}{anchura} \PYG{n}{g} \PYG{o+ow}{=} \PYG{n}{maximum} \PYG{p}{[}\PYG{n}{anchuraN} \PYG{n}{g} \PYG{n}{x} \PYG{o}{|} \PYG{n}{x} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{nodos} \PYG{n}{g}\PYG{p}{]}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} (anchuraN g x) es la anchura del nodo x en el grafo g. Por ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    anchuraN g 1  ==  4}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    anchuraN g 2  ==  3}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    anchuraN g 4  ==  2}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    anchuraN g 5  ==  4}
+\PYG{n+nf}{anchuraN} \PYG{o+ow}{::} \PYG{k+kt}{Grafo} \PYG{k+kt}{Int} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int}
+\PYG{n+nf}{anchuraN} \PYG{n}{g} \PYG{n}{x} \PYG{o+ow}{=} \PYG{n}{maximum} \PYG{p}{(}\PYG{l+m+mi}{0} \PYG{k+kt}{:} \PYG{p}{[}\PYG{n}{abs} \PYG{p}{(}\PYG{n}{x}\PYG{o}{\PYGZhy{}}\PYG{n}{v}\PYG{p}{)} \PYG{o}{|} \PYG{n}{v} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{adyacentes} \PYG{n}{g} \PYG{n}{x}\PYG{p}{])}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 2.2. Comprobar experimentalmente que la anchura del grafo}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} grafo cíclico de orden n es n\PYGZhy{}1.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} La conjetura}
+\PYG{n+nf}{conjetura} \PYG{o+ow}{::} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool}
+\PYG{n+nf}{conjetura} \PYG{n}{n} \PYG{o+ow}{=} \PYG{n}{anchura} \PYG{p}{(}\PYG{n}{grafoCiclo} \PYG{n}{n}\PYG{p}{)} \PYG{o}{==} \PYG{n}{n}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} (grafoCiclo n) es el grafo cíclico de orden n. Por ejemplo,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ghci\PYGZgt{} grafoCiclo 4}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    G ND (array (1,4) [(1,[(4,0),(2,0)]),(2,[(1,0),(3,0)]),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                       (3,[(2,0),(4,0)]),(4,[(3,0),(1,0)])])}
+\PYG{n+nf}{grafoCiclo} \PYG{o+ow}{::} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Grafo} \PYG{k+kt}{Int} \PYG{k+kt}{Int}
+\PYG{n+nf}{grafoCiclo} \PYG{n}{n} \PYG{o+ow}{=} \PYG{n}{creaGrafo} \PYG{k+kt}{ND} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{n}\PYG{p}{)} \PYG{n}{xs}
+    \PYG{k+kr}{where} \PYG{n}{xs} \PYG{o+ow}{=} \PYG{p}{[(}\PYG{n}{x}\PYG{p}{,}\PYG{n}{x}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{)} \PYG{o}{|} \PYG{n}{x} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{o}{..}\PYG{n}{n}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]]} \PYG{o}{++} \PYG{p}{[(}\PYG{n}{n}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{)]}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} La comprobación es}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ghci\PYGZgt{} and [conjetura n | n \PYGZlt{}\PYGZhy{} [2..10]]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    True}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 3.1. Se dice que una matriz es booleana si sus elementos}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} son los valores booleanos: True, False.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Definir la función }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    sumaB :: Bool \PYGZhy{}\PYGZgt{} Bool \PYGZhy{}\PYGZgt{} Bool }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (sumaB x y) es falso si y sólo si ambos argumentos son}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} falsos. }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n+nf}{sumaB} \PYG{o+ow}{::} \PYG{k+kt}{Bool} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool} 
+\PYG{n+nf}{sumaB} \PYG{o+ow}{=} \PYG{p}{(}\PYG{o}{||}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 3.2. Definir la función }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    prodB :: Bool \PYGZhy{}\PYGZgt{} Bool \PYGZhy{}\PYGZgt{} Bool }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (prodB x y) es verdadero si y sólo si ambos argumentos son}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} verdaderos. }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n+nf}{prodB} \PYG{o+ow}{::} \PYG{k+kt}{Bool} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool} 
+\PYG{n+nf}{prodB} \PYG{o+ow}{=} \PYG{p}{(}\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{p}{)}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 3.3. En los siguientes apartados usaremos los tipos}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} definidos a continuación: }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} * Los vectores son tablas cuyos índices son números naturales. }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      type Vector a = Array Int a}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} * Las matrices son tablas cuyos índices son pares de números}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}   naturales. }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}      type Matriz a = Array (Int,Int) a}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} En los ejemplos se usarán las siguientes matrices:}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    m1, m2 :: Matriz Bool}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    m1 = array ((1,1),(3,3)) [((1,1),True), ((1,2),False),((1,3),True),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                              ((2,1),False),((2,2),False),((2,3),False),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                              ((3,1),True), ((3,2),False),((3,3),True)] }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    m2 = array ((1,1),(3,3)) [((1,1),False),((1,2),False),((1,3),True), }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                              ((2,1),False),((2,2),False),((2,3),False),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                              ((3,1),True), ((3,2),False),((3,3),False)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} También se usan las siguientes funciones definidas en las relaciones}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} de ejercicios.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    numFilas :: Matriz a \PYGZhy{}\PYGZgt{} Int}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    numFilas = fst . snd . bounds}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    numColumnas:: Matriz a \PYGZhy{}\PYGZgt{} Int}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    numColumnas = snd . snd . bounds}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    filaMat :: Int \PYGZhy{}\PYGZgt{} Matriz a \PYGZhy{}\PYGZgt{} Vector a}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    filaMat i p = array (1,n) [(j,p!(i,j)) | j \PYGZlt{}\PYGZhy{} [1..n]]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}        where n = numColumnas p}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    columnaMat :: Int \PYGZhy{}\PYGZgt{} Matriz a \PYGZhy{}\PYGZgt{} Vector a}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    columnaMat j p = array (1,m) [(i,p!(i,j)) | i \PYGZlt{}\PYGZhy{} [1..m]]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}        where m = numFilas p}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Definir la función }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    prodMatricesB :: Matriz Bool \PYGZhy{}\PYGZgt{} Matriz Bool \PYGZhy{}\PYGZgt{} Matriz Bool }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (prodMatricesB p q) es el producto de las matrices booleanas}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} p y q, usando la suma y el producto de booleanos, definidos}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} previamente. Por ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ghci\PYGZgt{} prodMatricesB m1 m2}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    array ((1,1),(3,3)) [((1,1),True), ((1,2),False),((1,3),True),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                         ((2,1),False),((2,2),False),((2,3),False),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                         ((3,1),True), ((3,2),False),((3,3),True)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{k+kr}{type} \PYG{k+kt}{Vector} \PYG{n}{a} \PYG{o+ow}{=} \PYG{k+kt}{Array} \PYG{k+kt}{Int} \PYG{n}{a}
+
+\PYG{k+kr}{type} \PYG{k+kt}{Matriz} \PYG{n}{a} \PYG{o+ow}{=} \PYG{k+kt}{Array} \PYG{p}{(}\PYG{k+kt}{Int}\PYG{p}{,}\PYG{k+kt}{Int}\PYG{p}{)} \PYG{n}{a}
+
+\PYG{n+nf}{m1}\PYG{p}{,} \PYG{n}{m2} \PYG{o+ow}{::} \PYG{k+kt}{Matriz} \PYG{k+kt}{Bool}
+\PYG{n+nf}{m1} \PYG{o+ow}{=} \PYG{n}{array} \PYG{p}{((}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{))} \PYG{p}{[((}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),}\PYG{k+kt}{True}\PYG{p}{),} \PYG{p}{((}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{),}\PYG{k+kt}{False}\PYG{p}{),((}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{),}\PYG{k+kt}{True}\PYG{p}{),}
+                          \PYG{p}{((}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),}\PYG{k+kt}{False}\PYG{p}{),((}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{),}\PYG{k+kt}{False}\PYG{p}{),((}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{),}\PYG{k+kt}{False}\PYG{p}{),}
+                          \PYG{p}{((}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),}\PYG{k+kt}{True}\PYG{p}{),} \PYG{p}{((}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{),}\PYG{k+kt}{False}\PYG{p}{),((}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{),}\PYG{k+kt}{True}\PYG{p}{)]} 
+\PYG{n+nf}{m2} \PYG{o+ow}{=} \PYG{n}{array} \PYG{p}{((}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),(}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{))} \PYG{p}{[((}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),}\PYG{k+kt}{False}\PYG{p}{),((}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{),}\PYG{k+kt}{False}\PYG{p}{),((}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{),}\PYG{k+kt}{True}\PYG{p}{),} 
+                          \PYG{p}{((}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),}\PYG{k+kt}{False}\PYG{p}{),((}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{),}\PYG{k+kt}{False}\PYG{p}{),((}\PYG{l+m+mi}{2}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{),}\PYG{k+kt}{False}\PYG{p}{),}
+                          \PYG{p}{((}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),}\PYG{k+kt}{True}\PYG{p}{),} \PYG{p}{((}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{),}\PYG{k+kt}{False}\PYG{p}{),((}\PYG{l+m+mi}{3}\PYG{p}{,}\PYG{l+m+mi}{3}\PYG{p}{),}\PYG{k+kt}{False}\PYG{p}{)]}
+
+\PYG{n+nf}{numFilas} \PYG{o+ow}{::} \PYG{k+kt}{Matriz} \PYG{n}{a} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int}
+\PYG{n+nf}{numFilas} \PYG{o+ow}{=} \PYG{n}{fst} \PYG{o}{.} \PYG{n}{snd} \PYG{o}{.} \PYG{n}{bounds}
+
+\PYG{n+nf}{numColumnas}\PYG{o+ow}{::} \PYG{k+kt}{Matriz} \PYG{n}{a} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int}
+\PYG{n+nf}{numColumnas} \PYG{o+ow}{=} \PYG{n}{snd} \PYG{o}{.} \PYG{n}{snd} \PYG{o}{.} \PYG{n}{bounds}
+
+\PYG{n+nf}{filaMat} \PYG{o+ow}{::} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Matriz} \PYG{n}{a} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Vector} \PYG{n}{a}
+\PYG{n+nf}{filaMat} \PYG{n}{i} \PYG{n}{p} \PYG{o+ow}{=} \PYG{n}{array} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{n}\PYG{p}{)} \PYG{p}{[(}\PYG{n}{j}\PYG{p}{,}\PYG{n}{p}\PYG{o}{!}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{))} \PYG{o}{|} \PYG{n}{j} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{o}{..}\PYG{n}{n}\PYG{p}{]]}
+    \PYG{k+kr}{where} \PYG{n}{n} \PYG{o+ow}{=} \PYG{n}{numColumnas} \PYG{n}{p}
+
+\PYG{n+nf}{columnaMat} \PYG{o+ow}{::} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Matriz} \PYG{n}{a} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Vector} \PYG{n}{a}
+\PYG{n+nf}{columnaMat} \PYG{n}{j} \PYG{n}{p} \PYG{o+ow}{=} \PYG{n}{array} \PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{n}{m}\PYG{p}{)} \PYG{p}{[(}\PYG{n}{i}\PYG{p}{,}\PYG{n}{p}\PYG{o}{!}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{))} \PYG{o}{|} \PYG{n}{i} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{o}{..}\PYG{n}{m}\PYG{p}{]]}
+    \PYG{k+kr}{where} \PYG{n}{m} \PYG{o+ow}{=} \PYG{n}{numFilas} \PYG{n}{p}
+
+\PYG{n+nf}{prodMatricesB}\PYG{o+ow}{::} \PYG{k+kt}{Matriz} \PYG{k+kt}{Bool} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Matriz} \PYG{k+kt}{Bool} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Matriz} \PYG{k+kt}{Bool}
+\PYG{n+nf}{prodMatricesB} \PYG{n}{p} \PYG{n}{q} \PYG{o+ow}{=} 
+    \PYG{n}{array} \PYG{p}{((}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),(}\PYG{n}{m}\PYG{p}{,}\PYG{n}{n}\PYG{p}{))}
+          \PYG{p}{[((}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{),} \PYG{n}{prodEscalarB} \PYG{p}{(}\PYG{n}{filaMat} \PYG{n}{i} \PYG{n}{p}\PYG{p}{)} \PYG{p}{(}\PYG{n}{columnaMat} \PYG{n}{j} \PYG{n}{q}\PYG{p}{))} \PYG{o}{|}
+           \PYG{n}{i} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{o}{..}\PYG{n}{m}\PYG{p}{],} \PYG{n}{j} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{o}{..}\PYG{n}{n}\PYG{p}{]]}
+    \PYG{k+kr}{where} \PYG{n}{m} \PYG{o+ow}{=} \PYG{n}{numFilas} \PYG{n}{p}
+          \PYG{n}{n} \PYG{o+ow}{=} \PYG{n}{numColumnas} \PYG{n}{q}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} (prodEscalarB v1 v2) es el producto escalar booleano de los vectores}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} v1 y v2.}
+\PYG{n+nf}{prodEscalarB} \PYG{o+ow}{::} \PYG{k+kt}{Vector} \PYG{k+kt}{Bool} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Vector} \PYG{k+kt}{Bool} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool}
+\PYG{n+nf}{prodEscalarB} \PYG{n}{v1} \PYG{n}{v2} \PYG{o+ow}{=} 
+    \PYG{n}{sumB} \PYG{p}{[}\PYG{n}{prodB} \PYG{n}{i} \PYG{n}{j} \PYG{o}{|} \PYG{p}{(}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{)} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{zip} \PYG{p}{(}\PYG{n}{elems} \PYG{n}{v1}\PYG{p}{)} \PYG{p}{(}\PYG{n}{elems} \PYG{n}{v2}\PYG{p}{)]}
+    \PYG{k+kr}{where} \PYG{n}{sumB} \PYG{o+ow}{=} \PYG{n}{foldr} \PYG{n}{sumaB} \PYG{k+kt}{False}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 3.4. Se considera la siguiente relación de orden entre}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} matrices: p es menor o igual que q si para toda posición (i,j), el}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} elemento de p en (i,j) es menor o igual que el elemento de q en la}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} posición (i,j). Definir la función }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    menorMatricesB :: Ord a =\PYGZgt{} Matriz a \PYGZhy{}\PYGZgt{} Matriz a \PYGZhy{}\PYGZgt{} Bool}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (menorMatricesB p q) se verifica si p es menor o igual que}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} q.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    menorMatricesB m1 m2  ==  False}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    menorMatricesB m2 m1  ==  True}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n+nf}{menorMatricesB} \PYG{o+ow}{::} \PYG{k+kt}{Ord} \PYG{n}{a} \PYG{o+ow}{=\PYGZgt{}} \PYG{k+kt}{Matriz} \PYG{n}{a} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Matriz} \PYG{n}{a} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool}
+\PYG{n+nf}{menorMatricesB} \PYG{n}{p} \PYG{n}{q} \PYG{o+ow}{=} 
+    \PYG{n}{and} \PYG{p}{[}\PYG{n}{p}\PYG{o}{!}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{)} \PYG{o}{\PYGZlt{}=} \PYG{n}{q}\PYG{o}{!}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{)} \PYG{o}{|} \PYG{n}{i} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{o}{..}\PYG{n}{m}\PYG{p}{],} \PYG{n}{j} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{o}{..}\PYG{n}{n}\PYG{p}{]]}
+        \PYG{k+kr}{where} \PYG{n}{m} \PYG{o+ow}{=} \PYG{n}{numFilas} \PYG{n}{p}
+              \PYG{n}{n} \PYG{o+ow}{=} \PYG{n}{numColumnas} \PYG{n}{p}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 3.5. Dada una relación r sobre un conjunto de números}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} naturales mayores que 0, la matriz asociada a r es una matriz}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} booleana p, tal que p\PYGZus{}ij = True si y sólo si i está relacionado con j}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} mediante la relación r. Definir la función  }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    matrizRB:: RB Int \PYGZhy{}\PYGZgt{} Matriz Bool}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (matrizRB r) es la matriz booleana asociada a r. Por ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ghci\PYGZgt{} matrizRB r1}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    array ((1,1),(3,3)) [((1,1),True),((1,2),False),((1,3),True),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                         ((2,1),False),((2,2),False),((2,3),False),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                         ((3,1),True),((3,2),False),((3,3),True)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ghci\PYGZgt{} matrizRB r2}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    array ((1,1),(3,3)) [((1,1),False),((1,2),False),((1,3),True),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                         ((2,1),False),((2,2),False),((2,3),False),}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}                         ((3,1),True),((3,2),False),((3,3),False)]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Nota: Construir una matriz booleana cuadrada, de dimensión nxn,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} siendo n el máximo de los elementos del universo de r. }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n+nf}{matrizRB}\PYG{o+ow}{::} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Matriz} \PYG{k+kt}{Bool}
+\PYG{n+nf}{matrizRB} \PYG{n}{r} \PYG{o+ow}{=} \PYG{n}{array} \PYG{p}{((}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{1}\PYG{p}{),(}\PYG{n}{n}\PYG{p}{,}\PYG{n}{n}\PYG{p}{))} \PYG{p}{[((}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{),}\PYG{n}{f} \PYG{p}{(}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{))} \PYG{o}{|} \PYG{n}{i} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{o}{..}\PYG{n}{n}\PYG{p}{],}\PYG{n}{j}\PYG{o+ow}{\PYGZlt{}\PYGZhy{}}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{o}{..}\PYG{n}{n}\PYG{p}{]]}
+    \PYG{k+kr}{where} \PYG{n}{n}       \PYG{o+ow}{=} \PYG{n}{maximum} \PYG{p}{(}\PYG{n}{universo} \PYG{n}{r}\PYG{p}{)}
+          \PYG{n}{f} \PYG{p}{(}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{)} \PYG{o+ow}{=} \PYG{p}{(}\PYG{n}{i}\PYG{p}{,}\PYG{n}{j}\PYG{p}{)} \PYG{p}{`}\PYG{n}{elem}\PYG{p}{`} \PYG{n}{r} 
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 3.5. Se verifica la siguiente propiedad: r es una relación}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} transitiva si y sólo si M\PYGZca{}2 \PYGZlt{}= M, siendo M la matriz booleana}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} asoociada a r, y M\PYGZca{}2 el resultado de multiplicar M por M mediante}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} el producto booleano. Definir la función }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    transitivaB :: RB Int \PYGZhy{}\PYGZgt{} Bool}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (transitivaB r) se verifica si r es una relación}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} transitiva. Por ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    transitivaB r1 == True}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    transitivaB r2 == False }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n+nf}{transitivaB} \PYG{o+ow}{::} \PYG{k+kt}{RB} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool}
+\PYG{n+nf}{transitivaB} \PYG{n}{r} \PYG{o+ow}{=}  \PYG{n}{menorMatricesB} \PYG{n}{q} \PYG{n}{p}
+    \PYG{k+kr}{where} \PYG{n}{p} \PYG{o+ow}{=} \PYG{n}{matrizRB} \PYG{n}{r}
+          \PYG{n}{q} \PYG{o+ow}{=} \PYG{n}{prodMatricesB} \PYG{n}{p} \PYG{n}{p}
+\end{Verbatim}

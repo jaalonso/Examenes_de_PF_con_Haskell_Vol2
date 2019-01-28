@@ -1,0 +1,202 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Informática (1º del Grado en Matemáticas)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Examen de la 2ª convocatoria (16 de septiembre de 2011)}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{k+kr}{import} \PYG{n+nn}{Data.List}
+\PYG{k+kr}{import} \PYG{n+nn}{Test.QuickCheck}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 1. Definir la función}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    subsucesiones :: [Integer] \PYGZhy{}\PYGZgt{} [[Integer]]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (subsucesiones xs) es la lista de las subsucesiones}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} crecientes de elementos consecutivos de xs. Por ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    subsucesiones [1,0,1,2,3,0,4,5]  == [[1],[0,1,2,3],[0,4,5]]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    subsucesiones [5,6,1,3,2,7]      == [[5,6],[1,3],[2,7]]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    subsucesiones [2,3,3,4,5]        == [[2,3],[3,4,5]]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    subsucesiones [7,6,5,4]          == [[7],[6],[5],[4]]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+ 
+\PYG{n+nf}{subsucesiones} \PYG{o+ow}{::} \PYG{p}{[}\PYG{k+kt}{Integer}\PYG{p}{]} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{p}{[[}\PYG{k+kt}{Integer}\PYG{p}{]]}
+\PYG{n+nf}{subsucesiones} \PYG{k+kt}{[]}  \PYG{o+ow}{=} \PYG{k+kt}{[]}
+\PYG{n+nf}{subsucesiones} \PYG{p}{[}\PYG{n}{x}\PYG{p}{]} \PYG{o+ow}{=} \PYG{p}{[[}\PYG{n}{x}\PYG{p}{]]}
+\PYG{n+nf}{subsucesiones} \PYG{p}{(}\PYG{n}{x}\PYG{k+kt}{:}\PYG{n}{y}\PYG{k+kt}{:}\PYG{n}{zs}\PYG{p}{)}
+    \PYG{o}{|} \PYG{n}{x} \PYG{o}{\PYGZlt{}} \PYG{n}{y}     \PYG{o+ow}{=} \PYG{p}{(}\PYG{n}{x}\PYG{k+kt}{:}\PYG{n}{us}\PYG{p}{)}\PYG{k+kt}{:}\PYG{n}{vss}
+    \PYG{o}{|} \PYG{n}{otherwise} \PYG{o+ow}{=} \PYG{p}{[}\PYG{n}{x}\PYG{p}{]}\PYG{k+kt}{:}\PYG{n}{p}
+    \PYG{k+kr}{where} \PYG{n}{p}\PYG{o}{@}\PYG{p}{(}\PYG{n}{us}\PYG{k+kt}{:}\PYG{n}{vss}\PYG{p}{)} \PYG{o+ow}{=} \PYG{n}{subsucesiones} \PYG{p}{(}\PYG{n}{y}\PYG{k+kt}{:}\PYG{n}{zs}\PYG{p}{)}
+ 
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 2. Definir la función}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    menor :: Ord a =\PYGZgt{} [[a]] \PYGZhy{}\PYGZgt{} a}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (menor xss) es el menor elemento común a todas las listas de}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} xss, donde las listas de xss están ordenadas (de menor a mayor) y}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} pueden ser infinitas. Por ejemplo,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    menor [[3,4,5]]                           ==  3}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    menor [[1,2,3,4,5,6,7],[0.5,3/2,4,19]]    ==  4.0}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    menor [[0..],[4,6..],[2,3,5,7,11,13,28]]  ==  28}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+ 
+\PYG{n+nf}{menor} \PYG{o+ow}{::} \PYG{k+kt}{Ord} \PYG{n}{a} \PYG{o+ow}{=\PYGZgt{}} \PYG{p}{[[}\PYG{n}{a}\PYG{p}{]]} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{n}{a}
+\PYG{n+nf}{menor} \PYG{p}{(}\PYG{n}{xs}\PYG{k+kt}{:}\PYG{n}{xss}\PYG{p}{)} \PYG{o+ow}{=} 
+    \PYG{n}{head} \PYG{p}{[}\PYG{n}{x} \PYG{o}{|} \PYG{n}{x} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{xs}\PYG{p}{,} \PYG{n}{all} \PYG{p}{(}\PYG{n}{x} \PYG{p}{`}\PYG{n}{pertenece}\PYG{p}{`)} \PYG{n}{xss}\PYG{p}{]} 
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} (pertenece x ys) se verifica si x pertenece a la lista ys, donde ys}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} es una lista ordenada de menor a mayor y, posiblemente, infinita. Por}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    pertenece 6 [0,2..]  ==  True}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    pertenece 7 [0,2..]  ==  False}
+\PYG{n+nf}{pertenece} \PYG{o+ow}{::} \PYG{k+kt}{Ord} \PYG{n}{a} \PYG{o+ow}{=\PYGZgt{}} \PYG{n}{a} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{p}{[}\PYG{n}{a}\PYG{p}{]} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Bool}
+\PYG{n+nf}{pertenece} \PYG{n}{x} \PYG{k+kt}{[]} \PYG{o+ow}{=} \PYG{k+kt}{False}
+\PYG{n+nf}{pertenece} \PYG{n}{x} \PYG{p}{(}\PYG{n}{y}\PYG{k+kt}{:}\PYG{n}{ys}\PYG{p}{)} \PYG{o}{|} \PYG{n}{x} \PYG{o}{\PYGZlt{}} \PYG{n}{y}  \PYG{o+ow}{=} \PYG{k+kt}{False}
+                   \PYG{o}{|} \PYG{n}{x} \PYG{o}{==} \PYG{n}{y} \PYG{o+ow}{=} \PYG{k+kt}{True}
+                   \PYG{o}{|} \PYG{n}{x} \PYG{o}{\PYGZgt{}} \PYG{n}{y}  \PYG{o+ow}{=} \PYG{n}{pertenece} \PYG{n}{x} \PYG{n}{ys}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 3. Un conjunto A está cerrado respecto de una función  f si}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} para todo elemento x de A se tiene que f(x) pertenece a A. La}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} clausura de un conjunto B respecto de una función f es el menor}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} conjunto A que contiene a B y es cerrado respecto de f. Por ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} la clausura de \PYGZob{}0,1,2] respecto del opuesto es \PYGZob{}0,1,2,\PYGZhy{}1,\PYGZhy{}2\PYGZcb{}.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Definir la función  }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    clausura :: Eq a =\PYGZgt{} (a \PYGZhy{}\PYGZgt{} a) \PYGZhy{}\PYGZgt{} [a] \PYGZhy{}\PYGZgt{} [a]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (clausura f xs) es la clausura de xs respecto de f. Por}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    clausura (\PYGZbs{}x \PYGZhy{}\PYGZgt{} \PYGZhy{}x) [0,1,2]         ==  [0,1,2,\PYGZhy{}1,\PYGZhy{}2]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    clausura (\PYGZbs{}x \PYGZhy{}\PYGZgt{} (x+1) `mod` 5) [0]  ==  [0,1,2,3,4]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n+nf}{clausura} \PYG{o+ow}{::} \PYG{k+kt}{Eq} \PYG{n}{a} \PYG{o+ow}{=\PYGZgt{}} \PYG{p}{(}\PYG{n}{a} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{n}{a}\PYG{p}{)} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{p}{[}\PYG{n}{a}\PYG{p}{]} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{p}{[}\PYG{n}{a}\PYG{p}{]}
+\PYG{n+nf}{clausura} \PYG{n}{f} \PYG{n}{xs} \PYG{o+ow}{=} \PYG{n}{clausura\PYGZsq{}} \PYG{n}{f} \PYG{n}{xs} \PYG{n}{xs}
+    \PYG{k+kr}{where} \PYG{n}{clausura\PYGZsq{}} \PYG{n}{f} \PYG{n}{xs} \PYG{n}{ys} \PYG{o}{|} \PYG{n}{null} \PYG{n}{zs} \PYG{o+ow}{=} \PYG{n}{ys}
+                            \PYG{o}{|} \PYG{n}{otherwise} \PYG{o+ow}{=} \PYG{n}{clausura\PYGZsq{}} \PYG{n}{f} \PYG{n}{zs} \PYG{p}{(}\PYG{n}{ys}\PYG{o}{++}\PYG{n}{zs}\PYG{p}{)}
+              \PYG{k+kr}{where} \PYG{n}{zs} \PYG{o+ow}{=} \PYG{n}{nuevosSucesores} \PYG{n}{f} \PYG{n}{xs} \PYG{n}{ys}
+
+\PYG{n+nf}{nuevosSucesores} \PYG{o+ow}{::} \PYG{k+kt}{Eq} \PYG{n}{a} \PYG{o+ow}{=\PYGZgt{}} \PYG{p}{(}\PYG{n}{a} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{n}{a}\PYG{p}{)} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{p}{[}\PYG{n}{a}\PYG{p}{]} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{p}{[}\PYG{n}{a}\PYG{p}{]} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{p}{[}\PYG{n}{a}\PYG{p}{]}
+\PYG{n+nf}{nuevosSucesores} \PYG{n}{f} \PYG{n}{xs} \PYG{n}{ys} \PYG{o+ow}{=} \PYG{n}{nub} \PYG{p}{[}\PYG{n}{f} \PYG{n}{x} \PYG{o}{|} \PYG{n}{x} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{xs}\PYG{p}{]} \PYG{o}{\PYGZbs{}\PYGZbs{}} \PYG{n}{ys}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 4.1. El problema del laberinto numérico consiste en, dados}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} un par de números, encontrar la longitud del camino más corto entre}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} ellos usando sólo las siguientes operaciones: }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    * multiplicar por 2,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    * dividir por 2 (sólo para los pares) y}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    * sumar 2.}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Por ejemplo,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    longitudCaminoMinimo 3 12  ==  2}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    longitudCaminoMinimo 12 3  ==  2}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    longitudCaminoMinimo 9 2   ==  8}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    longitudCaminoMinimo 2 9   ==  5}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Unos caminos mínimos correspondientes a los ejemplos anteriores son}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} [3,6,12], [12,6,3], [9,18,20,10,12,6,8,4,2] y [2,4,8,16,18,9].}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Definir la función}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    orbita :: Int \PYGZhy{}\PYGZgt{} [Int] \PYGZhy{}\PYGZgt{} [Int]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (orbita n xs) es el conjunto de números que se pueden obtener}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} aplicando como máximo n veces las operaciones a los elementos de}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} xs. Por ejemplo, }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    orbita 0 [12]  ==  [12]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    orbita 1 [12]  ==  [6,12,14,24]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    orbita 2 [12]  ==  [3,6,7,8,12,14,16,24,26,28,48]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n+nf}{orbita} \PYG{o+ow}{::} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{p}{[}\PYG{k+kt}{Int}\PYG{p}{]} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{p}{[}\PYG{k+kt}{Int}\PYG{p}{]}
+\PYG{n+nf}{orbita} \PYG{l+m+mi}{0} \PYG{n}{xs} \PYG{o+ow}{=} \PYG{n}{sort} \PYG{n}{xs}
+\PYG{n+nf}{orbita} \PYG{n}{n} \PYG{n}{xs} \PYG{o+ow}{=} \PYG{n}{sort} \PYG{p}{(}\PYG{n}{nub} \PYG{p}{(}\PYG{n}{ys} \PYG{o}{++} \PYG{n}{concat} \PYG{p}{[}\PYG{n}{sucesores} \PYG{n}{x} \PYG{o}{|} \PYG{n}{x} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{n}{ys}\PYG{p}{]))}
+    \PYG{k+kr}{where} \PYG{n}{ys} \PYG{o+ow}{=} \PYG{n}{orbita} \PYG{p}{(}\PYG{n}{n}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)} \PYG{n}{xs}
+          \PYG{n}{sucesores} \PYG{n}{x} \PYG{o}{|} \PYG{n}{odd} \PYG{n}{x}     \PYG{o+ow}{=} \PYG{p}{[}\PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{x}\PYG{p}{,} \PYG{n}{x}\PYG{o}{+}\PYG{l+m+mi}{2}\PYG{p}{]}
+                      \PYG{o}{|} \PYG{n}{otherwise} \PYG{o+ow}{=} \PYG{p}{[}\PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{x}\PYG{p}{,} \PYG{n}{x} \PYG{p}{`}\PYG{n}{div}\PYG{p}{`} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{n}{x}\PYG{o}{+}\PYG{l+m+mi}{2}\PYG{p}{]}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 4.2. Definir la función}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    longitudCaminoMinimo :: Int \PYGZhy{}\PYGZgt{} Int \PYGZhy{}\PYGZgt{} Int}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (longitudCaminoMinimo x y) es la longitud del camino mínimo}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} desde x hasta y en el laberinto numérico. }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    longitudCaminoMinimo 3 12  ==  2}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    longitudCaminoMinimo 12 3  ==  2}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    longitudCaminoMinimo 9 2   ==  8}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    longitudCaminoMinimo 2 9   ==  5}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+
+\PYG{n+nf}{longitudCaminoMinimo} \PYG{o+ow}{::} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int}
+\PYG{n+nf}{longitudCaminoMinimo} \PYG{n}{x} \PYG{n}{y} \PYG{o+ow}{=} 
+    \PYG{n}{head} \PYG{p}{[}\PYG{n}{n} \PYG{o}{|} \PYG{n}{n} \PYG{o+ow}{\PYGZlt{}\PYGZhy{}} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{o}{..}\PYG{p}{],} \PYG{n}{y} \PYG{p}{`}\PYG{n}{elem}\PYG{p}{`} \PYG{n}{orbita} \PYG{n}{n} \PYG{p}{[}\PYG{n}{x}\PYG{p}{]]} 
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 5.1. En este ejercicio se estudia las relaciones entre los}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} valores de polinomios y los de sus correspondientes expresiones}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} aritméticas. }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Las expresiones aritméticas construidas con una variables, los}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} números enteros y las operaciones de sumar y multiplicar se pueden}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} representar mediante el tipo de datos Exp definido por   }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    data Exp = Var | Const Int | Sum Exp Exp | Mul Exp  Exp}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}               deriving Show}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Por ejemplo, la expresión 3+5x\PYGZca{}2 se puede representar por}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    exp1 :: Exp}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    exp1 = Sum (Const 3) (Mul Var (Mul Var (Const 5)))}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Definir la función }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    valorE :: Exp \PYGZhy{}\PYGZgt{} Int \PYGZhy{}\PYGZgt{} Int}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (valorE e n) es el valor de la expresión e cuando se}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} sustituye su variable por n. Por ejemplo,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    valorE exp1 2  ==  23}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+ 
+\PYG{k+kr}{data} \PYG{k+kt}{Exp} \PYG{o+ow}{=} \PYG{k+kt}{Var} \PYG{o}{|} \PYG{k+kt}{Const} \PYG{k+kt}{Int} \PYG{o}{|} \PYG{k+kt}{Sum} \PYG{k+kt}{Exp} \PYG{k+kt}{Exp} \PYG{o}{|} \PYG{k+kt}{Mul} \PYG{k+kt}{Exp}  \PYG{k+kt}{Exp}
+           \PYG{k+kr}{deriving} \PYG{k+kt}{Show}
+ 
+\PYG{n+nf}{exp1} \PYG{o+ow}{::} \PYG{k+kt}{Exp}
+\PYG{n+nf}{exp1} \PYG{o+ow}{=} \PYG{k+kt}{Sum} \PYG{p}{(}\PYG{k+kt}{Const} \PYG{l+m+mi}{3}\PYG{p}{)} \PYG{p}{(}\PYG{k+kt}{Mul} \PYG{k+kt}{Var} \PYG{p}{(}\PYG{k+kt}{Mul} \PYG{k+kt}{Var} \PYG{p}{(}\PYG{k+kt}{Const} \PYG{l+m+mi}{5}\PYG{p}{)))}
+ 
+\PYG{n+nf}{valorE} \PYG{o+ow}{::} \PYG{k+kt}{Exp} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int}
+\PYG{n+nf}{valorE} \PYG{k+kt}{Var}         \PYG{n}{n} \PYG{o+ow}{=} \PYG{n}{n}
+\PYG{n+nf}{valorE} \PYG{p}{(}\PYG{k+kt}{Const} \PYG{n}{a}\PYG{p}{)}   \PYG{n}{n} \PYG{o+ow}{=} \PYG{n}{a}
+\PYG{n+nf}{valorE} \PYG{p}{(}\PYG{k+kt}{Sum} \PYG{n}{e1} \PYG{n}{e2}\PYG{p}{)} \PYG{n}{n} \PYG{o+ow}{=} \PYG{n}{valorE} \PYG{n}{e1} \PYG{n}{n} \PYG{o}{+} \PYG{n}{valorE} \PYG{n}{e2} \PYG{n}{n}
+\PYG{n+nf}{valorE} \PYG{p}{(}\PYG{k+kt}{Mul} \PYG{n}{e1} \PYG{n}{e2}\PYG{p}{)} \PYG{n}{n} \PYG{o+ow}{=} \PYG{n}{valorE} \PYG{n}{e1} \PYG{n}{n} \PYG{o}{*} \PYG{n}{valorE} \PYG{n}{e2} \PYG{n}{n}
+ 
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 5.2. Los polinomios se pueden representar por la lista de}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} sus coeficientes. Por ejemplo, el polinomio 3+5x\PYGZca{}2 se puede}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} representar por [3,0,5].  }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} }
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Definir la función}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    expresion :: [Int] \PYGZhy{}\PYGZgt{} Exp}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (expresion p) es una expresión aritmética equivalente al}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} polinomio p. Por ejemplo,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ghci\PYGZgt{} expresion [3,0,5]}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    Sum (Const 3) (Mul Var (Sum (Const 0) (Mul Var (Const 5))))}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+ 
+\PYG{n+nf}{expresion} \PYG{o+ow}{::} \PYG{p}{[}\PYG{k+kt}{Int}\PYG{p}{]} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Exp}
+\PYG{n+nf}{expresion} \PYG{p}{[}\PYG{n}{a}\PYG{p}{]}   \PYG{o+ow}{=} \PYG{k+kt}{Const} \PYG{n}{a}
+\PYG{n+nf}{expresion} \PYG{p}{(}\PYG{n}{a}\PYG{k+kt}{:}\PYG{n}{p}\PYG{p}{)} \PYG{o+ow}{=} \PYG{k+kt}{Sum} \PYG{p}{(}\PYG{k+kt}{Const} \PYG{n}{a}\PYG{p}{)} \PYG{p}{(}\PYG{k+kt}{Mul} \PYG{k+kt}{Var} \PYG{p}{(}\PYG{n}{expresion} \PYG{n}{p}\PYG{p}{))}
+ 
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 5.3. Definir la función}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    valorP :: [Int] \PYGZhy{}\PYGZgt{} Int \PYGZhy{}\PYGZgt{} Int}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} tal que (valorP p n) es el valor del polinomio p cuando se sustituye}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} su variable por n. Por ejemplo,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    valorP [3,0,5] 2  ==  23}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+ 
+\PYG{n+nf}{valorP} \PYG{o+ow}{::} \PYG{p}{[}\PYG{k+kt}{Int}\PYG{p}{]} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int}
+\PYG{n+nf}{valorP} \PYG{p}{[}\PYG{n}{a}\PYG{p}{]} \PYG{k+kr}{\PYGZus{}} \PYG{o+ow}{=} \PYG{n}{a}
+\PYG{n+nf}{valorP} \PYG{p}{(}\PYG{n}{a}\PYG{k+kt}{:}\PYG{n}{p}\PYG{p}{)} \PYG{n}{n} \PYG{o+ow}{=} \PYG{n}{a} \PYG{o}{+} \PYG{n}{n} \PYG{o}{*} \PYG{n}{valorP} \PYG{n}{p} \PYG{n}{n}
+ 
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ejercicio 5.4. Comprobar con QuickCheck que, para todo polinomio p y}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} todo entero n,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    valorP p n == valorE (expresion p) n}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} \PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}\PYGZhy{}}
+ 
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} La propiedad es}
+\PYG{n+nf}{prop\PYGZus{}valor} \PYG{o+ow}{::} \PYG{p}{[}\PYG{k+kt}{Int}\PYG{p}{]} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Int} \PYG{o+ow}{\PYGZhy{}\PYGZgt{}} \PYG{k+kt}{Property}
+\PYG{n+nf}{prop\PYGZus{}valor} \PYG{n}{p} \PYG{n}{n} \PYG{o+ow}{=}
+    \PYG{n}{not} \PYG{p}{(}\PYG{n}{null} \PYG{n}{p}\PYG{p}{)} \PYG{o}{==\PYGZgt{}} 
+    \PYG{n}{valorP} \PYG{n}{p} \PYG{n}{n} \PYG{o}{==} \PYG{n}{valorE} \PYG{p}{(}\PYG{n}{expresion} \PYG{n}{p}\PYG{p}{)} \PYG{n}{n}
+ 
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} La comprobación es}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    ghci\PYGZgt{} quickCheck prop\PYGZus{}valor}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{}    +++ OK, passed 100 tests.}
+\end{Verbatim}
